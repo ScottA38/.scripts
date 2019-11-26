@@ -1,31 +1,42 @@
 #!/usr/bin/env python3
 
 import requests
-from sys import argv
+import argparse
 from getpass import getpass
 
 def printer(repo):
     print(repo["name"], '\t', repo["html_url"])
 
-user = "ScottA38"
+parser = argparse.ArgumentParser(description="List all or specified HTTP remotes on a github account (authentication required)")
+parser.add_argument('repositories', nargs="*", help="Name/s of specific repositories to inspect for remote URL (optional). If omitted, list all repositories under username")
+parser.add_argument("-user", default="ScottA38", metavar="username", dest="username", help="The username of the Github account to list repositories from" )
+parser.add_argument("--version", action="version", version='%(prog)s 1.1')
+parser.add_argument('--no-access', dest="no_access", action="store_true", help="Flag if requestee can authenticate the target Github account.\
+\nIf 'False', no password prompt occurs and only public repositories will be listed for the target user.")
+parser.set_defaults(no_access=False)
+
+args = parser.parse_args()
+
+user = args.username
 password = ""
-urls = ["http://api.github.com/user/repos"]
+base_url = "http://api.github.com/user/repos"
+urls = []
 
-while len(password) == 0:
-    print("Enter host password for user '{}':".format(user))
-    password = getpass(prompt="")
-    print("",end="\n")
+if not args.no_access:
+    while len(password) == 0:
+        print("Enter host password for user '{}':".format(user))
+        password = getpass(prompt="")
+else:
+    base_url = "https://api.github.com/users/" + user + "/repos"
 
-if len(argv) > 1:
-    urls.clear()
-    try:
-        for arg in argv[1:]:
-            reponame =  "https://api.github.com/repos/" + user + "/" + arg
-            urls.append(reponame)
-    except IndexError:
-        pass
+#test if the user has listed specific repos or not
+if len(args.repositories) > 0:
+        for repo in args.repositories:
+            urls.append(base_url + arg)
+else:
+    urls.append(base_url)
 
-print(urls)
+#print(urls)
 
 try:
     for url in urls:

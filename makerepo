@@ -8,7 +8,8 @@ from sys import argv
 
 parser = argparse.ArgumentParser(description='Create a new repo on a supplied (or default) github account')
 parser.add_argument('repository', help="The name of the repo to be created")
-parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub repository to store to")
+parser.add_argument("--version", action="version", version='%(prog)s 1.1')
+parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub account to store a repository to")
 
 args = parser.parse_args()
 
