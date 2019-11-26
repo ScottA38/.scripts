@@ -1,25 +1,39 @@
 #!/usr/bin/env python3
 
 import requests
-
+from getpass import getpass
+import argparse
+import pprint as pp
 from sys import argv
 
-user = "ScottA38"
+parser = argparse.ArgumentParser(description='Create a new repo on a supplied (or default) github account')
+parser.add_argument('repository', help="The name of the repo to be created")
+parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub repository to store to")
+
+args = parser.parse_args()
+
+user = args.username
 password = ""
 
 while len(password) == 0:
-    password = input("Enter host password for user '{}':".format(user))
+    print("Enter host password for user '{}':".format(user))
+    password = getpass(prompt="")
 
 try:
     new_repo_req = requests.post('https://api.github.com/user/repos', \
     auth=(user, password), \
-    json={"name": "{}".format(argv[1])}, \
+    json={"name": "{}".format(args.repository)}, \
     timeout=5)
 
     if new_repo_req.status_code == 201:
         print("Success!")
         print("New repo URL is: ", new_repo_req.json()["html_url"])
     else:
-        print("Failed, HTTP code: {}\nMessages:\n{}\n{}".format(new_repo_req.status_code, new_repo_req.json()["message"], new_repo_req.json()["errors"][0]["message"]))
+        raise requests.exceptions.RequestException()
 except requests.exceptions.ConnectionError as err:
     print("An error occurred when trying to connect github, are you connected to the internet?")
+except requests.exceptions.RequestException:
+    print("Failed, HTTP code: {}\nMessages:\n{}".format(new_repo_req.status_code, new_repo_req.json()["message"]))
+    if "errors" in new_repo_req.json().keys():
+        for error in new_repo_req.json()["errors"]:
+            print(error["message"])

@@ -3,7 +3,6 @@
 import requests
 from sys import argv
 from getpass import getpass
-import json
 
 def printer(repo):
     print(repo["name"], '\t', repo["html_url"])
@@ -47,3 +46,6 @@ except requests.exceptions.ConnectionError:
     print("An error occurred when trying to connect github, are you connected to the internet?")
 except requests.exceptions.RequestException:
     print("Failed, HTTP code: {}\nMessages:\n{}".format(repolist.status_code, repolist.json()["message"]))
+    if "errors" in repolist.json().keys():
+        for error in repolist.json()["errors"][0]:
+            print(error["message"])
