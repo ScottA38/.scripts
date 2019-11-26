@@ -31,8 +31,11 @@ else:
 
 #test if the user has listed specific repos or not
 if len(args.repositories) > 0:
-        for repo in args.repositories:
-            urls.append(base_url + arg)
+    base_url = "http://api.github.com/repos/{}/".format(user)
+    for repo in args.repositories:
+        url = base_url + repo
+        print(url)
+        urls.append(base_url + repo)
 else:
     urls.append(base_url)
 
