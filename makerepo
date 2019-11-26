@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+
+import requests
+
+from sys import argv
+
+user = "ScottA38"
+password = ""
+
+while len(password) == 0:
+    password = input("Enter host password for user '{}':".format(user))
+
+try:
+    new_repo_req = requests.post('https://api.github.com/user/repos', \
+    auth=(user, password), \
+    json={"name": "{}".format(argv[1])}, \
+    timeout=5)
+
+    if new_repo_req.status_code == 201:
+        print("Success!")
+        print("New repo URL is: ", new_repo_req.json()["html_url"])
+    else:
+        print("Failed, HTTP code: {}\nMessages:\n{}\n{}".format(new_repo_req.status_code, new_repo_req.json()["message"], new_repo_req.json()["errors"][0]["message"]))
+except requests.exceptions.ConnectionError as err:
+    print("An error occurred when trying to connect github, are you connected to the internet?")

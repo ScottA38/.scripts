@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import requests
+from sys import argv
+from getpass import getpass
+import json
+
+def printer(repo):
+    print(repo["name"], '\t', repo["html_url"])
+
+user = "ScottA38"
+password = ""
+urls = ["http://api.github.com/user/repos"]
+
+while len(password) == 0:
+    print("Enter host password for user '{}':".format(user))
+    password = getpass(prompt="")
+    print("",end="\n")
+
+if len(argv) > 1:
+    urls.clear()
+    try:
+        for arg in argv[1:]:
+            reponame =  "https://api.github.com/repos/" + user + "/" + arg
+            urls.append(reponame)
+    except IndexError:
+        pass
+
+print(urls)
+
+try:
+    for url in urls:
+        repolist = requests.get(url, auth = (user, password), timeout=5)
+        if repolist.status_code == 200:
+            jresp = repolist.json()
+            #print(f"type of response.json() is: {type(repolist.json())}")
+            if jresp.__class__.__name__ == "dict":
+                printer(jresp)
+            else:
+                for repo in jresp:
+                    printer(repo)
+        else:
+            #   print(repolist.text)
+            raise requests.exceptions.RequestException()
+
+except requests.exceptions.ConnectionError:
+    print("An error occurred when trying to connect github, are you connected to the internet?")
+except requests.exceptions.RequestException:
+    print("Failed, HTTP code: {}\nMessages:\n{}".format(repolist.status_code, repolist.json()["message"]))
