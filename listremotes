@@ -11,7 +11,7 @@ parser = argparse.ArgumentParser(description="List all or specified HTTP remotes
 parser.add_argument('repositories', nargs="*", help="Name/s of specific repositories to inspect for remote URL (optional). If omitted, list all repositories under username")
 parser.add_argument("-user", default="ScottA38", metavar="username", dest="username", help="The username of the Github account to list repositories from" )
 parser.add_argument("--version", action="version", version='%(prog)s 1.1')
-parser.add_argument('--no-access', dest="no_access", action="store_true", help="Flag if requestee can authenticate the target Github account.\
+parser.add_argument('--no-access', dest="no_access", default= False, action="store_true", help="Flag if requestee can authenticate the target Github account.\
 \nIf 'False', no password prompt occurs and only public repositories will be listed for the target user.")
 parser.set_defaults(no_access=False)
 
@@ -30,16 +30,15 @@ else:
     base_url = "https://api.github.com/users/" + user + "/repos"
 
 #test if the user has listed specific repos or not
-if len(args.repositories) > 0:
+for repo in args.repositories:
     base_url = "http://api.github.com/repos/{}/".format(user)
     for repo in args.repositories:
-        url = base_url + repo
-        print(url)
         urls.append(base_url + repo)
 else:
     urls.append(base_url)
 
 #print(urls)
+repolist=None
 
 try:
     for url in urls:
@@ -53,7 +52,7 @@ try:
                 for repo in jresp:
                     printer(repo)
         else:
-            #   print(repolist.text)
+            #print(repolist.text)
             raise requests.exceptions.RequestException()
 
 except requests.exceptions.ConnectionError:

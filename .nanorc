@@ -1,1 +1,2 @@
-../.nanorc
+set nowrap
+set backupdir /tmp/nano

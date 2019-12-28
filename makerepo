@@ -1,40 +1,68 @@
 #!/usr/bin/env python3
 
 import requests
+import os
+from git import Repo
 from getpass import getpass
 import argparse
 import pprint as pp
 from sys import argv
+
+def setup_dir(args, url):
+    try:
+        if args.make:
+            print(args.make)
+            os.mkdir(args.make)
+            bare = Repo.init(os.path.join(os.getcwd(), args.make, '.git'), bare=True)
+            bare.create_remote('origin', url)
+    except:
+        raise Exception()
+
+def use_REST_API(args, password):
+    try:
+        new_repo_req = requests.post('https://api.github.com/user/repos', \
+        auth=(args.username, password), \
+        json={"name": "{}".format(args.repository)}, \
+        timeout=5)
+
+        if new_repo_req.status_code == 201:
+            url = new_repo_req.json()["html_url"]
+            print("New repo URL is: ", url)
+            return url
+        else:
+            raise requests.exceptions.RequestException()
+    except requests.exceptions.ConnectionError as err:
+        print("An error occurred when trying to connect github, are you connected to the internet?")
+        return False
+    except requests.exceptions.RequestException:
+        print("Failed, HTTP code: {}\nMessages:\n{}".format(new_repo_req.status_code, new_repo_req.json()["message"]))
+        if "errors" in new_repo_req.json().keys():
+            for error in new_repo_req.json()["errors"]:
+                print(error["message"])
+        return False
+
 
 parser = argparse.ArgumentParser(description='Create a new repo on a supplied (or default) github account')
 parser.add_argument('repository', help="The name of the repo to be created")
 parser.add_argument("--version", action="version", version='%(prog)s 1.1')
 parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub account to store a repository to")
 
+args = parser.parse_known_args()
+#print(args)
+parser.add_argument('-m', '--make', default= False, nargs='?', dest="make", metavar="make flag", const=args[0].repository, help="Whether or not the user wants to create a subdirectory with the repo name")
+
 args = parser.parse_args()
 
 user = args.username
 password = ""
+URL = ""
 
 while len(password) == 0:
     print("Enter host password for user '{}':".format(user))
     password = getpass(prompt="")
 
-try:
-    new_repo_req = requests.post('https://api.github.com/user/repos', \
-    auth=(user, password), \
-    json={"name": "{}".format(args.repository)}, \
-    timeout=5)
+URL = use_REST_API(args, password)
 
-    if new_repo_req.status_code == 201:
-        print("Success!")
-        print("New repo URL is: ", new_repo_req.json()["html_url"])
-    else:
-        raise requests.exceptions.RequestException()
-except requests.exceptions.ConnectionError as err:
-    print("An error occurred when trying to connect github, are you connected to the internet?")
-except requests.exceptions.RequestException:
-    print("Failed, HTTP code: {}\nMessages:\n{}".format(new_repo_req.status_code, new_repo_req.json()["message"]))
-    if "errors" in new_repo_req.json().keys():
-        for error in new_repo_req.json()["errors"]:
-            print(error["message"])
+assert URL, "makerepo: Failed"
+if args.make:
+    setup_dir(args, URL)
