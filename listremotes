@@ -11,8 +11,7 @@ parser = argparse.ArgumentParser(description="List all or specified HTTP remotes
 parser.add_argument('repositories', nargs="*", help="Name/s of specific repositories to inspect for remote URL (optional). If omitted, list all repositories under username")
 parser.add_argument("-user", default="ScottA38", metavar="username", dest="username", help="The username of the Github account to list repositories from" )
 parser.add_argument("--version", action="version", version='%(prog)s 1.1')
-parser.add_argument('--no-access', dest="no_access", default= False, action="store_true", help="Flag if requestee can authenticate the target Github account.\
-\nIf 'False', no password prompt occurs and only public repositories will be listed for the target user.")
+parser.add_argument('-p', '--public', dest="public", default= False, action="store_true", help="Flag if caller only wants to see public repositories, thus skipping required curl authentication.")
 parser.set_defaults(no_access=False)
 
 args = parser.parse_args()
@@ -22,7 +21,7 @@ password = ""
 base_url = "http://api.github.com/user/repos"
 urls = []
 
-if not args.no_access:
+if not args.public:
     while len(password) == 0:
         print("Enter host password for user '{}':".format(user))
         password = getpass(prompt="")

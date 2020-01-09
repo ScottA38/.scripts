@@ -1,6 +1,7 @@
 alias ls='ls -GF'
 alias te='open -e'
 
+#Hello
 export PS1="\w @ \h (\u)|\t\n____________________ => "
 
 export CLICOLOR=1
@@ -9,9 +10,9 @@ export LSCOLORS=ExFxBxDxCxegedabagacad
 
 alias xampp="echo ~/.bitnami/stackman/machines/xampp/volumes/root"
 
-# Setting PATH for Python 3.6
-# The original version is saved in .bash_profile.pysave
+# Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
+
 #add custom bash/scripting lang scripts
 PATH="~/.scripts:${PATH}"
 export PATH
