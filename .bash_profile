@@ -10,6 +10,8 @@ export LSCOLORS=ExFxBxDxCxegedabagacad
 
 alias xampp="echo ~/.bitnami/stackman/machines/xampp/volumes/root"
 
+alias activate="source env/bin/activate"
+
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
 PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
 
