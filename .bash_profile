@@ -1,29 +1,16 @@
-alias ls='ls -GF'
-alias te='open -e'
-
-#Hello
 export PS1="\w @ \h (\u)|\t\n____________________ => "
 
 export CLICOLOR=1
-
 export LSCOLORS=ExFxBxDxCxegedabagacad
 
-alias xampp="echo ~/.bitnami/stackman/machines/xampp/volumes/root"
-
-alias activate="source env/bin/activate"
-
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.6/bin:${PATH}"
+new_path="/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
 
-#add custom bash/scripting lang scripts
-PATH="~/.scripts:${PATH}"
+case ":$PATH:" in
+  *":$new_path:"*) :;; # already there
+  *) PATH="$new_path:$PATH"; echo "added $new_path" to path;; # or PATH="$PATH:$new_entry"
+esac
 export PATH
-
-#create a new github repository via curl
-#nurep() {
-#	curl -u 'ScottA38' https://api.github.com/user/repos -d '{"name": "'"${1}"'"}'
-#	echo "Name is: $1"
-#}
 
 #function for fs traversal where you want to automatically
 #know if the directory is a git directory without looking
@@ -79,3 +66,7 @@ batch_rename() {
 
 	popd
 }
+
+if [ -f ~/.bashrc ]; then
+source ~/.bashrc
+fi
