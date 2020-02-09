@@ -22,7 +22,7 @@ def use_REST_API(args, password):
     try:
         new_repo_req = requests.post('https://api.github.com/user/repos', \
         auth=(args.username, password), \
-        json={"name": "{}".format(args.repository)}, \
+        json={"name": "{}".format(args.repository), "private": "{}".format(args.public)}, \
         timeout=5)
 
         if new_repo_req.status_code == 201:
@@ -46,6 +46,7 @@ parser = argparse.ArgumentParser(description='Create a new repo on a supplied (o
 parser.add_argument('repository', help="The name of the repo to be created")
 parser.add_argument("--version", action="version", version='%(prog)s 1.1')
 parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub account to store a repository to")
+parser.add_argument('-p', '--public', dest="public", default= False, action='store_true', help="Flag that the created repository should be a private repository")
 
 args = parser.parse_known_args()
 #print(args)

@@ -33,12 +33,13 @@ collapse(){
 	rmdir $1
 }
 
-dockexec(){
-	docker exec -it DOCK sh -c $1
+dockec(){
+	docker exec -it "$DOCK" sh -c "$1"
 }
 
 set_container(){
-	export DOCK=$1
+	results=$(docker ps | grep $1 | awk '{ print $1 }' |  head -n 1)
+	[ ! -z "$results" ] && export DOCK=$results
 }
 
 #function to sequentially traverse back up the file system until a directory keyword is matched and return the absolute path to this location

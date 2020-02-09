@@ -3,9 +3,13 @@
 import requests
 import argparse
 from getpass import getpass
+from operator import itemgetter
+from pprint import pprint
 
 def printer(repo):
-    print(repo["name"], '\t', repo["html_url"])
+    private =  "Private" if repo["private"] else "Public"
+    outcol = "\033[1;31;50m" if repo["private"] else "\033[1;32;50m"
+    print("{} {}".format(outcol, private), "\033[0m 0;37;50m    ", repo["name"], '\t', repo["html_url"])
 
 parser = argparse.ArgumentParser(description="List all or specified HTTP remotes on a github account (authentication required)")
 parser.add_argument('repositories', nargs="*", help="Name/s of specific repositories to inspect for remote URL (optional). If omitted, list all repositories under username")
@@ -43,8 +47,9 @@ try:
     for url in urls:
         repolist = requests.get(url, auth = (user, password), timeout=5)
         if repolist.status_code == 200:
-            jresp = repolist.json()
+            jresp = sorted(repolist.json(), key=itemgetter('private'))
             #print(f"type of response.json() is: {type(repolist.json())}")
+            pprint(jresp)
             if jresp.__class__.__name__ == "dict":
                 printer(jresp)
             else:
