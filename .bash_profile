@@ -69,6 +69,5 @@ batch_rename() {
 	done
 }
 
-if [ -f ~/.bashrc ]; then
-source ~/.bashrc
-fi
+#watch the user's Downloads folder and send any word documents with a matching name to a specific folder
+fswatch -0 -Ii ".*kana.*.docx" --event OwnerModified  ~/Downloads/ | xargs -0 -n 1 -I {}  mv {} ~/Documents/Misc/Japanese/worksheets &
