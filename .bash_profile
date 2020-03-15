@@ -29,7 +29,7 @@ done
 
 #function to unpack all files in a child directory of the cwd to the cwd and then remove the directory
 collapse(){
-	rm -r $1
+	mv $1/* $1/../
 	rmdir $1
 }
 
@@ -53,7 +53,7 @@ back() {
 	fi
 }
 
-#NOTE: this is currentl only for a specific use case and needs to be adapted for other cases
+#NOTE: this is currently only for a specific use case and needs to be adapted for other cases
 batch_rename() {
 	set -u
 	interval=$1
@@ -70,4 +70,6 @@ batch_rename() {
 }
 
 #watch the user's Downloads folder and send any word documents with a matching name to a specific folder
-fswatch -0 -Ii ".*kana.*.docx" --event OwnerModified  ~/Downloads/ | xargs -0 -n 1 -I {}  mv {} ~/Documents/Misc/Japanese/worksheets &
+fswatch -0 -e ".*" -Ii "*kana*.docx$" --event OwnerModified  ~/Downloads/ | xargs -0 -n 1 -I {}  mv {} ~/Documents/Misc/Japanese/worksheets &
+#automatically move all incoming pictures
+fswatch -0 -e ".*" -EIi "\\.(jpg|png|bmp|jpeg)$" --event OwnerModified . | xargs -0 -n 1 -I {} [ wc -c {} -ge 10000 ] && mv {} ~/Pictures/Downloads &
