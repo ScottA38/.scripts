@@ -4,7 +4,7 @@ export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
-new_path="/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
+new_path="/usr/local/opt/ruby/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
 
 case ":$PATH:" in
   *":$new_path:"*) :;; # already there
@@ -70,6 +70,6 @@ batch_rename() {
 }
 
 #watch the user's Downloads folder and send any word documents with a matching name to a specific folder
-fswatch -0 -e ".*" -Ii "*kana*.docx$" --event OwnerModified  ~/Downloads/ | xargs -0 -n 1 -I {}  mv {} ~/Documents/Misc/Japanese/worksheets &
+#fswatch -0 -e ".*" -Ii "*kana*.docx$" --event OwnerModified  ~/Downloads/ | xargs -0 -n 1 -I {}  mv {} ~/Documents/Misc/Japanese/worksheets &
 #automatically move all incoming pictures
-fswatch -0 -e ".*" -EIi "\\.(jpg|png|bmp|jpeg)$" --event OwnerModified . | xargs -0 -n 1 -I {} [ wc -c {} -ge 10000 ] && mv {} ~/Pictures/Downloads &
+#fswatch -0 -e ".*" -EIi "\\.(jpg|png|bmp|jpeg)$" --event OwnerModified . | xargs -0 -n 1 -I {} [ wc -c {} -ge 10000 ] && mv {} ~/Pictures/Downloads &

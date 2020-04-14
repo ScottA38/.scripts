@@ -10,11 +10,10 @@ from sys import argv
 
 def setup_dir(args, url):
     try:
-        if args.make:
-            print(args.make)
-            os.mkdir(args.make)
-            bare = Repo.init(os.path.join(os.getcwd(), args.make, '.git'), bare=True)
-            bare.create_remote('origin', url)
+        #print(args.make)
+        os.mkdir(args.repository)
+        bare = Repo.init(os.path.join(os.getcwd(), args.make, '.git'), bare=True)
+        bare.create_remote('origin', url)
     except:
         raise Exception()
 
@@ -47,11 +46,7 @@ parser.add_argument('repository', help="The name of the repo to be created")
 parser.add_argument("--version", action="version", version='%(prog)s 1.1')
 parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub account to store a repository to")
 parser.add_argument('-p', '--private', dest="private", default= False, action='store_true', help="Flag that the created repository should be a private repository")
-
-args = parser.parse_known_args(['repository'])
-#print(f"args: {args}")
-parser.add_argument('-m', '--make', default= False, nargs='?', dest="make", metavar="make flag", const=args[0].repository, help="Whether or not the user wants to create a subdirectory with the repo name")
-
+parser.add_argument('-m', '--make', dest="make", default= False, action='store_true', help="Whether or not the user wants to create a subdirectory with the repo name")
 args = parser.parse_args()
 
 user = args.username
