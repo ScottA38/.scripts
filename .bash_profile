@@ -4,7 +4,7 @@ export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
-new_path="/usr/local/opt/ruby/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
+new_path="/usr/local/opt/ruby/bin:/usr/local/:/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
 
 case ":$PATH:" in
   *":$new_path:"*) :;; # already there
@@ -42,17 +42,6 @@ set_container(){
 	[ ! -z "$results" ] && export DOCK=$results
 }
 
-#function to sequentially traverse back up the file system until a directory keyword is matched and return the absolute path to this location
-back() {
-	return=$(echo $(pwd) | gsed -ne "s/\/$1\/.*$/\/$1/I p")
-	if [ $return ]
-	then
-		cd $return && echo $pwd
-	else
-		echo "Didn't find directory name '$1' in current path"
-	fi
-}
-
 #NOTE: this is currently only for a specific use case and needs to be adapted for other cases
 batch_rename() {
 	set -u
@@ -73,3 +62,6 @@ batch_rename() {
 #fswatch -0 -e ".*" -Ii "*kana*.docx$" --event OwnerModified  ~/Downloads/ | xargs -0 -n 1 -I {}  mv {} ~/Documents/Misc/Japanese/worksheets &
 #automatically move all incoming pictures
 #fswatch -0 -e ".*" -EIi "\\.(jpg|png|bmp|jpeg)$" --event OwnerModified . | xargs -0 -n 1 -I {} [ wc -c {} -ge 10000 ] && mv {} ~/Pictures/Downloads &
+
+#Adding autocomplete to bash command
+source ./back-completion.bash
