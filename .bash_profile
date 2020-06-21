@@ -12,6 +12,8 @@ case ":$PATH:" in
 esac
 export PATH
 
+alias back='. back'
+
 #function to check if a newly navigated directory is a git directory
 gd() {
 cd "$1" || return
@@ -37,7 +39,7 @@ dockec(){
 	docker exec -it "$DOCK" sh -c "$1"
 }
 
-set_container(){
+dockont(){
 	results=$(docker ps | grep $1 | awk '{ print $1 }' |  head -n 1)
 	[ ! -z "$results" ] && export DOCK=$results
 }
@@ -64,4 +66,4 @@ batch_rename() {
 #fswatch -0 -e ".*" -EIi "\\.(jpg|png|bmp|jpeg)$" --event OwnerModified . | xargs -0 -n 1 -I {} [ wc -c {} -ge 10000 ] && mv {} ~/Pictures/Downloads &
 
 #Adding autocomplete to bash command
-source ./back-completion.bash
+source ~/.scripts/back-completion.bash

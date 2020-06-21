@@ -1,12 +1,11 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 #function to sequentially traverse back up the file system until a directory keyword is matched and return the absolute path to this location
-back() {
-	return=$(echo $(pwd) | gsed -ne "s/\/$1\/.*$/\/$1/I p")
-	if [ $return ]
-	then
-		cd $return && echo "back: $(pwd)"
-	else
-		echo "Didn't find directory name '$1' in current path"
-	fi
-}
+return=$(echo $(pwd) | gsed -ne "s/\/$1\/.*$/\/$1/I p")
+echo "return: $return"
+if [ $return ]
+then
+	cd $return && echo "back: $(pwd)"
+else
+	echo "Didn't find directory name '$1' in current path"
+fi
