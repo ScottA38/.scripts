@@ -14,21 +14,6 @@ export PATH
 
 alias back='. back'
 
-#function to check if a newly navigated directory is a git directory
-gd() {
-cd "$1" || return
-for i in $(ls -a)
-do
-	if [ $i  == ".git" ]
-	then
-		echo "Eureka!"
-		git fetch
-		git status
-		return
-	fi
-done
-}
-
 #function to unpack all files in a child directory of the cwd to the cwd and then remove the directory
 collapse(){
 	mv $1/* $1/../

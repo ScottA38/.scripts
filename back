@@ -2,7 +2,6 @@
 
 #function to sequentially traverse back up the file system until a directory keyword is matched and return the absolute path to this location
 return=$(echo $(pwd) | gsed -ne "s/\/$1\/.*$/\/$1/I p")
-echo "return: $return"
 if [ $return ]
 then
 	cd $return && echo "back: $(pwd)"
