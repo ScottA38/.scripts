@@ -7,8 +7,10 @@ from getpass import getpass
 import argparse
 import pprint as pp
 from sys import argv
+import json
 
 def setup_dir(args, url):
+    """Creates a directory and intialises a new git repository inside of that new directory with a remote supplied by argument"""
     try:
         #print(args.make)
         os.mkdir(args.repository)
@@ -17,16 +19,45 @@ def setup_dir(args, url):
     except:
         raise Exception()
 
-def use_REST_API(args, password):
-    try:
-        new_repo_req = requests.post('https://api.github.com/user/repos', \
-        auth=(args.username, password), \
-        json={"name": "{}".format(args.repository), "private": "{}".format(args.private)}, \
-        timeout=5)
+def new_repository(args, password):
+    """Use POST request to make a new Github repository using supplied parameters in 'args'"""
+    return requests.post('https://api.github.com/user/repos', \
+    auth=(args.username, password), \
+    json={"name": "{}".format(args.repository), "private": "{}".format(args.private)}, \
+    timeout=5)
 
+def new_gist(args, password):
+    """Make a new gist by parsing current directory"""
+    #get contents of all files in the specified directory as Python dict
+    files = parse_dir()
+    return requests.post('https://api.github.com/gists', \
+    auth=(args.username, password), \
+    json={"private": "{}".format(args.private), "files": "{}".format(json.dumps(files))}, \
+    timeout=5)
+
+def parse_dir(dir=os.getcwd()):
+    """Function to inspect all files and return a dict of the file names and content"""
+    files_json = {}
+    try:
+        for file in os.listdir(dir):
+            if os.path.splitext(file)[1] in [".txt", ".md"] and not (file[0] == "." or os.path.isdir(file)):
+                with open(f"{dir}/{file}", "r") as to_read:
+                    files_json[file] = { "content": to_read.read() }
+        return files_json
+    except Exception as e:
+        print(f"Failed on ${file}: ${str(e)}")
+
+def initialise(args, password):
+    try:
+        new_repo_req = None
+        if args.gist:
+            new_repo_req = new_gist(args, password)
+        else:
+            new_repo_req = new_repository(args, password)
+
+        # success case, repository is created and the URL of this repository is returned
         if new_repo_req.status_code == 201:
             url = new_repo_req.json()["html_url"]
-            print("New repo URL is: ", url)
             return url
         else:
             raise requests.exceptions.RequestException()
@@ -47,6 +78,7 @@ parser.add_argument("--version", action="version", version='%(prog)s 1.1')
 parser.add_argument('-U', '--user', default="ScottA38", metavar="username", dest="username", help="The username of the GitHub account to store a repository to")
 parser.add_argument('-p', '--private', dest="private", default= False, action='store_true', help="Flag that the created repository should be a private repository")
 parser.add_argument('-m', '--make', dest="make", default= False, action='store_true', help="Whether or not the user wants to create a subdirectory with the repo name")
+parser.add_argument('-G', '--gist', default=False, action='store_true', help="Whether or not the user intends to make a gist or a Github repository")
 args = parser.parse_args()
 
 user = args.username
@@ -57,8 +89,11 @@ while len(password) == 0:
     print("Enter host password for user '{}':".format(user))
     password = getpass(prompt="")
 
-URL = use_REST_API(args, password)
+URL = initialise(args, password)
 
-assert URL, "makerepo: Failed"
-if args.make:
+if (URL):
+    print(f'New repo URL is: {URL}')
+else:
+    raise Exception("makerepo: Failed");
+if args.make and not args.gist:
     setup_dir(args, URL)
