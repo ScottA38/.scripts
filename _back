@@ -1,0 +1,6 @@
+#compdef _back back
+
+local pth=`pwd`
+local -a options
+options=(${(s:/:)pth})
+_describe 'back' options
