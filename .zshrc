@@ -27,6 +27,10 @@ alias back='. back'
 autoload -U compinit
 compinit
 
+#Setting colourised ls output
+export CLICOLOR=1
+zstyle ':completion:*' list-colors 'di=1;34:ln=1;35:so=1;31:pi=1;33:ex=1;32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
+
 # Adding parts of path manually
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
 PATH="$PATH:/usr/local/opt/ruby/bin:/usr/local/:/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
@@ -66,3 +70,4 @@ batch_rename() {
 		mv "$f" "SCAN$n.jpg"
 	done
 }
+
