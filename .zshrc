@@ -1,4 +1,5 @@
-PROMPT='%(?.%F{green}√.%F{red}?%?)%f %B%F{yellow}%~%f%b %# '
+#PROMPT='%(?.%F{green}√.%F{red}?%?)%f %B%F{yellow}%~%f%b %# '
+source ./submodules/agkozak-zsh-prompt/agkozak-zsh-prompt.plugin.zsh
 
 HISTFILE=$HOME/.zsh_history
 
