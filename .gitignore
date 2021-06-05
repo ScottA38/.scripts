@@ -1,3 +1,7 @@
+#system escapes
 __pycache__
 .zsh_history
 .zcompdump
+
+#personal escapes
+.secrets.json
