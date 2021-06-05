@@ -8,10 +8,6 @@ AGKOZAK_LEFT_PROMPT_ONLY=1
 
 HISTFILE=$HOME/.zsh_history
 
-#adding a directory for search to the function definition files path
-fpath=( ~/.scripts "${fpath[@]}" )
-autoload -Uz ~/.scripts/*
-
 #For when you forget to cd
 setopt AUTO_CD
 
@@ -81,6 +77,9 @@ batch_rename() {
 		mv "$f" "SCAN$n.jpg"
 	done
 }
+
+#adding a directory for search to the function definition files path
+PATH=$ZDOTDIR:$PATH
 
 # Add init line for rvm
 . ~/.rvm/scripts/rvm 
