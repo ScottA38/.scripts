@@ -1,11 +1,8 @@
 #/usr/bin/env bash
 
+if [ -z $1 ]; then echo "gd: no directory arg"; return; fi
 cd "$1" || return 
-for i in $(ls -a) 
-do 
-	if [ $i == ".git" ] then 
-		echo "Eureka!" 
-		git status 
-		return;
-	fi 
-done
+if [ -d ".git" ]
+then 
+	git status 
+fi 

@@ -1,10 +1,16 @@
+#Set prompt library
 #PROMPT='%(?.%F{green}√.%F{red}?%?)%f %B%F{yellow}%~%f%b %# '
-source ./submodules/agkozak-zsh-prompt/agkozak-zsh-prompt.plugin.zsh
+source $ZDOTDIR/submodules/agkozak-zsh-prompt/agkozak-zsh-prompt.plugin.zsh
+
+# Set prompt config
+AGKOZAK_MULTILINE=0
+AGKOZAK_LEFT_PROMPT_ONLY=1
 
 HISTFILE=$HOME/.zsh_history
 
 #adding a directory for search to the function definition files path
-fpath+=~/.scripts
+fpath=( ~/.scripts "${fpath[@]}" )
+autoload -Uz ~/.scripts/*
 
 #For when you forget to cd
 setopt AUTO_CD
@@ -23,18 +29,22 @@ setopt HIST_VERIFY
 #allows the user to cycle through autocomplete options by continuing to press the autocomplete button
 setopt MENU_COMPLETE
 
+#setting aliases
+alias cl='clear'
 alias back='. back'
+alias dockerd='open -a docker'
+alias gs="git status"
 
 autoload -U compinit
 compinit
 
 #Setting colourised ls output
 export CLICOLOR=1
-zstyle ':completion:*' list-colors 'di=1;34:ln=1;35:so=1;31:pi=1;33:ex=1;32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
+zstyle ':completion:*' list-colors 'di=1;36:ln=1;35:so=1;31:pi=1;33:ex=1;32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43'
 
 # Adding parts of path manually
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
-PATH="$PATH:/usr/local/opt/ruby/bin:/usr/local/:/Library/Frameworks/Python.framework/Versions/3.6/bin:~/.scripts"
+PATH="/usr/local/opt/ruby/bin:/usr/local/:~/.scripts:$HOME/.rvm/bin:$PATH"
 
 case ":$PATH:" in
   *":$new_path:"*) :;; # already there
@@ -72,3 +82,5 @@ batch_rename() {
 	done
 }
 
+# Add init line for rvm
+. ~/.rvm/scripts/rvm 
