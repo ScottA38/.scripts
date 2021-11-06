@@ -11,6 +11,10 @@ HISTFILE=$HOME/.zsh_history
 #For when you forget to cd
 setopt AUTO_CD
 
+#Set persistent directories
+hash -d commissions=/Users/ScottAnderson/Tech/commissions
+hash -d langs=/Users/ScottAnderson/Tech/langs
+
 #deactivate case-sensitive globbing default
 unsetopt CASE_GLOB
 
@@ -33,6 +37,8 @@ alias gs="git status"
 
 autoload -U compinit
 compinit
+autoload bashcompinit
+bashcompinit
 
 #Setting colourised ls output
 export CLICOLOR=1
@@ -40,7 +46,7 @@ zstyle ':completion:*' list-colors 'di=1;36:ln=1;35:so=1;31:pi=1;33:ex=1;32:bd=3
 
 # Adding parts of path manually
 # Setting PATH for Python 3.6 The original version is saved in .bash_profile.pysave
-PATH="/usr/local/opt/ruby/bin:/usr/local/:~/.scripts:$HOME/.rvm/bin:$PATH"
+PATH="/usr/local/opt/ruby/bin:/usr/local/bin:~/.scripts:$HOME/.rvm/bin:$PATH"
 
 case ":$PATH:" in
   *":$new_path:"*) :;; # already there
@@ -78,8 +84,17 @@ batch_rename() {
 	done
 }
 
+dockimgselect() {
+	export DOCK=$1;
+}
+
 #adding a directory for search to the function definition files path
 PATH=$ZDOTDIR:$PATH
+
+if [ -z $INITIAL_LOGIN ]; then
+	. $ZDOTDIR/completion/*.bash;
+	export INITIAL_LOGIN=1;
+fi
 
 # Add init line for rvm
 . ~/.rvm/scripts/rvm 
