@@ -3,5 +3,7 @@ __pycache__
 .zsh_history
 .zcompdump
 
+.idea/*
+
 #personal escapes
 .secrets.json
